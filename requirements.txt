@@ -1,0 +1,10 @@
+langchain
+langchain-community
+pinecone
+pypdf
+sentence-transformers
+streamlit
+python-dotenv
+torch
+accelerate
+numpy
