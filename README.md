@@ -17,7 +17,7 @@ This project is an interactive, multi-turn conversational RAG system that allows
 * **Framework**: [Streamlit](https://streamlit.io/)
 * **Orchestration**: [LangChain](https://www.langchain.com/)
 * **Vector Database**: [ChromaDB](https://www.trychroma.com/)
-* **LLM Hosting**: [Ollama](https://ollama.com/) (with Llama 3)
+* **LLM Hosting**: [Ollama](https://ollama.com/) (with Llama 3.2)
 * **Embeddings**: [Hugging Face](https://huggingface.co/) Sentence Transformers
 
 ## Setup and Installation
@@ -28,7 +28,7 @@ This project is an interactive, multi-turn conversational RAG system that allows
 * [Ollama](https://ollama.com/) installed and running.
 * The required LLM pulled via Ollama. Open your terminal and run:
     ```bash
-    ollama pull llama3
+    ollama pull llama3.2
     ```
 
 ### Step 1: Install Dependencies
