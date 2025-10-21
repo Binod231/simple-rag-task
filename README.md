@@ -1,29 +1,26 @@
-# AI Research Explorer 
+# Financial Document Explorer
 
-This project is an interactive web application that allows you to "chat" with foundational AI research papers. Using a Retrieval-Augmented Generation (RAG) architecture, you can ask complex questions in plain English and receive answers sourced directly from the documents.
+This project is an interactive, multi-turn conversational RAG system that allows you to "chat" with financial documents (specifically 10-K reports). You can ask complex questions in plain English and receive answers sourced directly from the documents with citations.
 
 ## How It Works
 
-The application leverages a modern AI stack to provide a seamless question-answering experience:
-
-1.  **Document Loading**: Research papers (PDFs) from the `data/` directory are loaded and parsed.
-2.  **Text Chunking**: The text from each document is split into smaller, semantically meaningful chunks.
-3.  **Vector Embeddings**: Each chunk is converted into a numerical vector embedding using a Hugging Face sentence-transformer model.
-4.  **Vector Storage**: These embeddings are stored and indexed in a **Pinecone** serverless vector database for fast and efficient retrieval.
-5.  **Question & Retrieval**: When you ask a question, it's also converted into an embedding. The system then queries Pinecone to find the most relevant text chunks from the documents.
-6.  **Answer Generation**: The retrieved chunks and your original question are passed as context to a local Large Language Model (run via **Ollama**) which generates a comprehensive answer.
+1.  **Community Selection**: Users select a company (a "community") from a dropdown, scoping the search to that company's documents.
+2.  **Document Loading**: 10-K reports (PDFs) from the selected community's `data/` sub-directory are loaded.
+3.  **Text Chunking**: The text is split into smaller, semantically meaningful chunks.
+4.  **Vector Embeddings**: Each chunk is converted into a numerical vector embedding.
+5.  **Vector Storage**: These embeddings are stored and indexed in a **ChromaDB** local vector database.
+6.  **Conversational Retrieval**: When you ask a question, the system retrieves the most relevant text chunks from the selected community's documents.
+7.  **Answer Generation**: The retrieved chunks and your question are passed as context to a local LLM (run via **Ollama**) to generate a comprehensive answer with source citations.
 
 ## Tech Stack
 
 * **Framework**: [Streamlit](https://streamlit.io/)
 * **Orchestration**: [LangChain](https://www.langchain.com/)
-* **Vector Database**: [Pinecone](https://www.pinecone.io/)
+* **Vector Database**: [ChromaDB](https://www.trychroma.com/)
 * **LLM Hosting**: [Ollama](https://ollama.com/) (with Llama 3)
 * **Embeddings**: [Hugging Face](https://huggingface.co/) Sentence Transformers
 
 ## Setup and Installation
-
-Follow these steps to get the application running on your local machine.
 
 ### Prerequisites
 
@@ -34,23 +31,7 @@ Follow these steps to get the application running on your local machine.
     ollama pull llama3
     ```
 
-### Step 1: Get Your Pinecone API Key
-
-1.  Create a free account on the [Pinecone website](https://www.pinecone.io/).
-2.  In your dashboard, navigate to the **API Keys** section.
-3.  Copy your **API Key** and **Environment** values (e.g., `us-east-1`).
-
-### Step 2: Set Up Environment Variables
-
-1.  In the project's root directory, create a file named `.env`.
-2.  Add your Pinecone credentials to this file:
-
-    ```
-    PINECONE_API_KEY="YOUR_API_KEY"
-    PINECONE_API_ENV="YOUR_ENVIRONMENT"
-    ```
-
-### Step 3: Install Dependencies
+### Step 1: Install Dependencies
 
 1.  Create and activate a Python virtual environment.
 2.  Install all required packages from the `requirements.txt` file:
@@ -61,7 +42,7 @@ Follow these steps to get the application running on your local machine.
 
 ## How to Run the Application
 
-1.  Ensure your PDF files are placed in the `data/` directory.
+1.  Organize your PDF files into sub-directories within the `data/` directory. Each sub-directory will be a "community."
 2.  Make sure the Ollama application is running in the background.
 3.  Open your terminal, navigate to the project root, and run:
 
@@ -72,16 +53,27 @@ Follow these steps to get the application running on your local machine.
 4.  The application will open in a new browser tab, ready for you to ask questions!
 
 ## Project Structure
-
-```
+```bash
 rag-project/
-├── .env                  # Stores API keys and environment variables
 ├── app.py                # The main Streamlit application script
-├── config.py             # Configuration for models and Pinecone index
+├── config.py             # Configuration for the LLM model
 ├── requirements.txt      # Python package dependencies
 ├── README.md             # This file
 └── data/
-    ├── AttentionIsAllYouNeed.pdf
-    ├── LLaMA.pdf
-    └── ... (and other research papers)
+    ├── Apple/
+    │   └── apple-10k.pdf
+    ├── Nvidia/
+    │   └── nvidia-10k.pdf
+    └── Tesla/
+        └── tesla-10k.pdf
+        ```
 ```
+## Troubleshooting & Performance
+Why is the "Finding the answer..." step slow?
+The response time depends heavily on your computer's hardware. The slowdown occurs because the application sends a large amount of context (retrieved text from the PDF) to the local LLM. Running this on a CPU is very demanding.
+
+To improve speed:
+
+Use a GPU: If you have a dedicated NVIDIA GPU, Ollama will automatically use it, making responses significantly faster.
+
+Use a Smaller Model: In config.py, switch to a smaller model like "gemma:2b" or "tinyllama". This is the most effective way to improve speed on CPU.```       

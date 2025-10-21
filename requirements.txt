@@ -1,6 +1,7 @@
 langchain
 langchain-community
-pinecone
+langchain-huggingface
+chromadb
 pypdf
 sentence-transformers
 streamlit
